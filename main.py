@@ -60,4 +60,7 @@ async def delete_item(id:int):
 
 # ============== todo using db ===============
 
-
+# create new todos 
+@app.post("/db/", response_model=schemas.Todos)
+async def create_new_todo(item: schemas.Todos, db: Session = Depends(get_db)):
+	return functions.create_todo(db=db, todo=item)
