@@ -1,6 +1,22 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.orm import Session
+
+# from . import crud, models, schemas
+import models, schemas, functions
+from database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
-from models import Todos
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 todo = []
 
@@ -19,13 +35,13 @@ async def get_single_item(id:int):
 
 # create new todos 
 @app.post("/")
-async def add_new_item(items:Todos):
+async def add_new_item(items:schemas.Todos):
 	todo.append(items)
 	return {"Message": f'Successfully added new items => {items}'}
 
 # update todos  
 @app.put("/{id}/")
-async def update_item(id:int, items:Todos):
+async def update_item(id:int, items:schemas.Todos):
 	for obj in todo:
 		if obj.id == id:
 			obj.id = id
@@ -41,5 +57,7 @@ async def delete_item(id:int):
 			todo.remove(item)
 			return {"message": f"Item deleted successfully => {item}"}
 	return {"message": "Item not found to remove"}
+
+# ============== todo using db ===============
 
 
