@@ -1,10 +1,13 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 class Todos(BaseModel):
     item: str
 
 class TodoCreate(Todos):
     completed: bool
+
+class TodoUpdate(TodoCreate):
+    pass
 
 class AllTodos(Todos):
     id: int
