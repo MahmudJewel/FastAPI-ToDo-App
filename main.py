@@ -78,15 +78,21 @@ async def get_all_todos2(db: Session = Depends(get_db)):
 	return items
 
 # get todo by id
-@app.get("/todo/{tod_id}",response_model=schemas.AllTodos)
-async def get_todo(tod_id:int, db: Session = Depends(get_db)):
-	item = functions.get_todo(db=db, tod_id=tod_id)
+@app.get("/todo/{todo_id}",response_model=schemas.AllTodos)
+async def get_todo(todo_id:int, db: Session = Depends(get_db)):
+	item = functions.get_todo(db=db, todo_id=todo_id)
 	if item is None:
 		raise HTTPException(status_code=404, detail="Item not found")
 	return item
 
 # update todo
-@app.patch("/todo/{tod_id}", response_model=schemas.AllTodos)
+@app.patch("/todo/{todo_id}", response_model=schemas.AllTodos)
 async def update_todo(tod_id:int, updated_item: schemas.TodoUpdate, db: Session = Depends(get_db)):
-	item = functions.update_todo(db=db, tod_id=tod_id, updated_item=updated_item)
+	item = functions.update_todo(db=db, todo_id=todo_id, updated_item=updated_item)
+	return item
+
+# update todo
+@app.delete("/todo/{todo_id}")
+async def delete_todo(todo_id:int, db: Session = Depends(get_db)):
+	item = functions.delete_todo(db=db, todo_id=todo_id)
 	return item
