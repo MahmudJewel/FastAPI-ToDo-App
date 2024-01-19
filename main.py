@@ -18,6 +18,7 @@ def get_db():
     finally:
         db.close()
 
+# =============> todo using list <=====================
 todo = []
 
 # get all todos 
@@ -61,17 +62,26 @@ async def delete_item(id:int):
 # ============== todo using db ===============
 
 # create new todos 
-@app.post("/todo/", response_model=schemas.Todos)
+@app.post("/todo/", response_model=schemas.AllTodos)
 async def create_new_todo(item: schemas.Todos, db: Session = Depends(get_db)):
 	return functions.create_todo(db=db, todo=item)
 
 # get all todos 
-@app.get("/todo/", response_model=list[schemas.AllTodos])
+@app.get("/todo/",response_model=list[schemas.AllTodos])
 async def get_all_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 	items = functions.get_todos(db, skip=skip, limit=limit)
 	return items
 
 @app.get("/todos/")
 async def get_all_todos2(db: Session = Depends(get_db)):
-	items = db.query(Todo).all()
+	items = db.query(models.Todo).all()
 	return items
+
+# get todo by id
+@app.get("/todo/{tod_id}",response_model=schemas.AllTodos)
+async def get_todo(tod_id:int, db: Session = Depends(get_db)):
+	item = functions.get_todo(db=db, tod_id=tod_id)
+	if item is None:
+		raise HTTPException(status_code=404, detail="Item not found")
+	return item
+

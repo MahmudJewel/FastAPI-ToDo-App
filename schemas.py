@@ -4,12 +4,11 @@ class Todos(BaseModel):
     item: str
 
 class TodoCreate(Todos):
-    pass
+    completed: bool
 
 class AllTodos(Todos):
     id: int
     completed: bool
-
     class Config:
         orm_mode = True
 
