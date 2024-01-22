@@ -67,14 +67,9 @@ async def create_new_todo(item: schemas.Todos, db: Session = Depends(get_db)):
 	return functions.create_todo(db=db, todo=item)
 
 # get all todos 
-@app.get("/todo/", response_model=list[schemas.AllTodos])
+@app.get("/todo", response_model=list[schemas.AllTodos])
 async def get_all_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 	items = functions.get_todos(db=db, skip=skip, limit=limit)
-	return items
-
-@app.get("/todos/")
-async def get_all_todos2(db: Session = Depends(get_db)):
-	items = db.query(models.Todo).all()
 	return items
 
 # get todo by id
